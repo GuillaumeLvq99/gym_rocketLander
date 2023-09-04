@@ -147,7 +147,7 @@ class RocketLander(gym.Env):
         self.ship = None
         self.legs = []
         self.state = []
-        self.continuous = continuous
+        self.continuous = False
         self.landed = False
         self.landed_fraction = []
         self.good_landings = 0
