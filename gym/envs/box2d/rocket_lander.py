@@ -59,7 +59,7 @@ Continuous control inputs are:
 
 """
 
-CONTINUOUS = False
+CONTINUOUS_init = False
 VEL_STATE = True  # Add velocity info to state
 FPS = 60
 SCALE_S = 0.35  # Temporal Scaling, lower is faster - adjust forces appropriately
@@ -134,7 +134,7 @@ class ContactDetector(contactListener):
 class RocketLander(gym.Env):
     metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": FPS}
 
-    def __init__(self, level_number=0, continuous=True, speed_threshold=1):
+    def __init__(self, level_number=0, continuous=CONTINUOUS_init, speed_threshold=1):
         self.level_number = level_number
         self._seed()
         self.viewer = None
