@@ -64,6 +64,7 @@ VEL_STATE = True  # Add velocity info to state
 FPS = 60
 SCALE_S = 0.35  # Temporal Scaling, lower is faster - adjust forces appropriately
 INITIAL_RANDOM = 0.0  # Random scaling of initial velocity, higher is more difficult
+LF_BUFFER_SIZE = 20
 
 START_HEIGHT = 1000.0
 START_SPEED = 40.0
@@ -149,7 +150,7 @@ class RocketLander(gym.Env):
         self.state = []
         self.continuous = continuous
         self.landed = False
-        self.landed_fraction = []
+        self.landed_fraction = [0 for _ in range(LF_BUFFER_SIZE)]
         self.good_landings = 0
         self.speed_threshold = speed_threshold
         almost_inf = 9999
@@ -518,23 +519,23 @@ class RocketLander(gym.Env):
                 reward += shaping - self.prev_shaping
             self.prev_shaping = shaping
             if self.legs[0].ground_contact:
-                reward += 100
-            if self.legs[0].ground_contact:
-                reward += 100
+                reward += 1
+            if self.legs[1].ground_contact:
+                reward += 1
             if self.landed:
                 # print("short landing")
                 self.landed_ticks += 1
-                reward += 1
-                self.good_landings += 1
+                reward += 10
 
             else:
                 self.landed_ticks = 0
-            if self.landed_ticks > 59:
+
+            if self.landed_ticks == FPS:
+                reward = 1000
                 print("GOOD LANDING")
                 self.good_landings += 1
-            if self.landed_ticks == FPS:
-                reward = 1
-
+                self.landed_fraction.pop(0)
+                self.landed_fraction.append(1)
                 done = True
 
         if x_distance < 0.90 * (SHIP_WIDTH / 2):
@@ -544,7 +545,7 @@ class RocketLander(gym.Env):
         elif not groundcontact:
             reward -= 0.25 / FPS
 
-        reward = np.clip(reward, -1, 1)
+        # reward = np.clip(reward, -1, 1)
 
         # REWARD -------------------------------------------------------------------------------------------------------
 
