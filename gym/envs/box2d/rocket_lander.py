@@ -524,7 +524,7 @@ class RocketLander(gym.Env):
             #if self.prev_shaping is not None:
             #    reward += shaping - self.prev_shaping
             reward  = (0.1-abs(x_distance)-abs(angle))/2
-            self.prev_shaping = shaping
+            #self.prev_shaping = shaping
             if self.legs[0].ground_contact:
                 reward += 1-abs(x_distance)
             if self.legs[1].ground_contact:
