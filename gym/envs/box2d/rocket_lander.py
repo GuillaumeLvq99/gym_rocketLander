@@ -416,13 +416,13 @@ class RocketLander(gym.Env):
                 self.force_dir = -1
         else:
             if action == 0:
-                self.gimbal += 0.1
+                self.gimbal += 0.05
             elif action == 1:
-                self.gimbal -= 0.1
+                self.gimbal -= 0.05
             elif action == 2:
-                self.throttle += 0.2
+                self.throttle += 0.1
             elif action == 3:
-                self.throttle -= 0.2
+                self.throttle -= 0.1
             elif action == 4:  # left
                 self.force_dir = -1
             elif action == 5:  # right
