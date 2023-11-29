@@ -59,7 +59,8 @@ Continuous control inputs are:
 
 """
 
-CONTINUOUS = True
+CONTINUOUS = False
+
 VEL_STATE = True  # Add velocity info to state
 FPS = 60
 SCALE_S = 0.35  # Temporal Scaling, lower is faster - adjust forces appropriately
@@ -72,8 +73,8 @@ START_SPEED = 40.0
 # ROCKET
 MIN_THROTTLE = 0.4
 GIMBAL_THRESHOLD = 0.4
-MAIN_ENGINE_POWER = 1600 * SCALE_S * 1.0
-SIDE_ENGINE_POWER = 100 / FPS * SCALE_S * 2.0
+MAIN_ENGINE_POWER = 2000 * SCALE_S * 1.0
+SIDE_ENGINE_POWER = 200 / FPS * SCALE_S * 2.0
 
 ROCKET_WIDTH = 3.66 * SCALE_S
 ROCKET_HEIGHT = ROCKET_WIDTH / 3.7 * 47.9
@@ -408,21 +409,21 @@ class RocketLander(gym.Env):
 
         if self.continuous:
             np.clip(action, -1, 1)
-            self.gimbal += action[0] * 0.15 / FPS
-            self.throttle += action[1] * 0.5 / FPS
+            self.gimbal += action[0] * 0.30 / FPS
+            self.throttle += action[1] * 1.0 / FPS
             if action[2] > 0.5:
                 self.force_dir = 1
             elif action[2] < -0.5:
                 self.force_dir = -1
         else:
             if action == 0:
-                self.gimbal += 0.05
+                self.gimbal += 0.1
             elif action == 1:
-                self.gimbal -= 0.05
+                self.gimbal -= 0.1
             elif action == 2:
-                self.throttle += 0.1
+                self.throttle += 0.2
             elif action == 3:
-                self.throttle -= 0.1
+                self.throttle -= 0.2
             elif action == 4:  # left
                 self.force_dir = -1
             elif action == 5:  # right
