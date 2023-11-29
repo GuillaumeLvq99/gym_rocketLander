@@ -59,8 +59,7 @@ Continuous control inputs are:
 
 """
 
-CONTINUOUS = False
-
+CONTINUOUS = True
 VEL_STATE = True  # Add velocity info to state
 FPS = 60
 SCALE_S = 0.35  # Temporal Scaling, lower is faster - adjust forces appropriately
@@ -73,8 +72,8 @@ START_SPEED = 40.0
 # ROCKET
 MIN_THROTTLE = 0.4
 GIMBAL_THRESHOLD = 0.4
-MAIN_ENGINE_POWER = 2000 * SCALE_S * 1.0
-SIDE_ENGINE_POWER = 200 / FPS * SCALE_S * 2.0
+MAIN_ENGINE_POWER = 1600 * SCALE_S * 1.0
+SIDE_ENGINE_POWER = 100 / FPS * SCALE_S * 2.0
 
 ROCKET_WIDTH = 3.66 * SCALE_S
 ROCKET_HEIGHT = ROCKET_WIDTH / 3.7 * 47.9
@@ -409,21 +408,21 @@ class RocketLander(gym.Env):
 
         if self.continuous:
             np.clip(action, -1, 1)
-            self.gimbal += action[0] * 0.30 / FPS
-            self.throttle += action[1] * 1.0 / FPS
+            self.gimbal += action[0] * 0.15 / FPS
+            self.throttle += action[1] * 0.5 / FPS
             if action[2] > 0.5:
                 self.force_dir = 1
             elif action[2] < -0.5:
                 self.force_dir = -1
         else:
             if action == 0:
-                self.gimbal += 0.1
+                self.gimbal += 0.05
             elif action == 1:
-                self.gimbal -= 0.1
+                self.gimbal -= 0.05
             elif action == 2:
-                self.throttle += 0.2
+                self.throttle += 0.1
             elif action == 3:
-                self.throttle -= 0.2
+                self.throttle -= 0.1
             elif action == 4:  # left
                 self.force_dir = -1
             elif action == 5:  # right
@@ -489,14 +488,14 @@ class RocketLander(gym.Env):
         y_abs_speed = vel_l[1] * np.sin(angle)
         brokenleg = False
         brokenleg = (
-            self.legs[0].joint.angle < 0 or self.legs[1].joint.angle > -0
+            self.legs[0].joint.angle < -0.1 or self.legs[1].joint.angle > 0.1
         ) and groundcontact
         # if groundcontact and abs(y_abs_speed) > self.speed_threshold:
         #     brokenleg = True
         outside = abs(pos.x - W / 2) > W / 2 or pos.y > H
 
-        #fuelcost = 0.1 * (0 * (self.power + abs(self.force_dir))) / FPS
-        fuelcost = self.power
+        fuelcost = 0.1 * (0 * (self.power + abs(self.force_dir))) / FPS
+        #fuelcost = self.power
         self.total_fuel -= fuelcost
 
         self.landed = (
@@ -517,20 +516,20 @@ class RocketLander(gym.Env):
             reward -= 500+self.total_fuel
         else:
             # reward shaping
-            #shaping = (
-            #    -0.5
-            #    * abs(distance / 1000)
-            #    * (distance + speed + (-y_abs_speed) + abs(angle))
-            #)
-            #shaping += 0.1 * (self.legs[0].ground_contact + self.legs[1].ground_contact)
-            shaping  = (abs(x_distance)-abs(angle))/2
+            shaping = (
+                -0.5
+                * abs(distance / 1000)
+                * (distance + speed + (-y_abs_speed) + abs(angle))
+            )
+            shaping += 0.1 * (self.legs[0].ground_contact + self.legs[1].ground_contact)
+            #shaping  = (abs(x_distance)-abs(angle))/2
             if self.prev_shaping is not None:
                 reward += shaping - self.prev_shaping
             self.prev_shaping = shaping
             if self.legs[0].ground_contact:
-                reward += 1-abs(x_distance)
+                reward += 1#-abs(x_distance)
             if self.legs[1].ground_contact:
-                reward += 1-abs(x_distance)
+                reward += 1#-abs(x_distance)
 
             if self.landed:
                 # print("short landing")
@@ -547,18 +546,18 @@ class RocketLander(gym.Env):
                 self.landed_fraction.append(1)
                 done = True
 
-        #if x_distance < 0.90 * (SHIP_WIDTH / 2):
-        #    reward += 0.01
+        if x_distance < 0.90 * (SHIP_WIDTH / 2):
+            reward += 0.01
 
-        if y_distance < 0.5:
-            reward -= 0.1-abs(speed)
+        #if y_distance < 0.5:
+        #    reward -= 0.1-abs(speed)
         if done:
-            #reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
-            reward += self.total_fuel+500
-        #elif not groundcontact:
-        #    reward -= 0.25 / FPS
+            reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
+            #reward += self.total_fuel+500
+        elif not groundcontact:
+            reward -= 0.25 / FPS
 
-        # reward = np.clip(reward, -1, 1)
+        reward = np.clip(reward, -1, 1)
 
         # REWARD -------------------------------------------------------------------------------------------------------
 
