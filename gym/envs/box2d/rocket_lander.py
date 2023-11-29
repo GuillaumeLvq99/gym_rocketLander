@@ -488,7 +488,7 @@ class RocketLander(gym.Env):
         y_abs_speed = vel_l[1] * np.sin(angle)
         brokenleg = False
         brokenleg = (
-            self.legs[0].joint.angle < -0.1 or self.legs[1].joint.angle > 0.1
+            self.legs[0].joint.angle < 0.1 or self.legs[1].joint.angle > -0.1
         ) and groundcontact
         # if groundcontact and abs(y_abs_speed) > self.speed_threshold:
         #     brokenleg = True
