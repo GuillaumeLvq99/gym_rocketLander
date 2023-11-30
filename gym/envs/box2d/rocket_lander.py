@@ -508,7 +508,10 @@ class RocketLander(gym.Env):
         #reward = -fuelcost
         reward = 0
 
-        if outside : #or brokenleg:
+        if self level_number>0:
+            if outside or brokenleg:
+                self.game_over = True
+        elif outside : 
             self.game_over = True
 
         if self.game_over:
@@ -554,6 +557,9 @@ class RocketLander(gym.Env):
         if done:
             reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
             #reward += self.total_fuel+500
+            if not self.landed_ticks == FPS:
+                self.landed_fraction.pop(0)
+                self.landed_fraction.append(0)
         elif not groundcontact:
             reward -= 0.25 / FPS
 
