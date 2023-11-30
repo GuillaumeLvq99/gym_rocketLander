@@ -544,7 +544,7 @@ class RocketLander(gym.Env):
 
             if self.landed_ticks == FPS:
                 self.good_landings += 1
-                print("\r", self.good_landings, "GOOD LANDINGS, ", self.episode_number, "EPISODES")
+                print(self.good_landings, "GOOD LANDINGS, ", self.episode_number, "EPISODES\r")
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(1)
                 done = True
