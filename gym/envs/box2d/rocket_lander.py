@@ -201,7 +201,7 @@ class RocketLander(gym.Env):
         self.throttle = 0
         self.gimbal = 0.0
         self.landed_ticks = 0
-        self.total_fuel=500
+        self.total_fuel=700
         self.stepnumber = 0
         self.smoke = []
         self.episode_number += 1
@@ -505,8 +505,7 @@ class RocketLander(gym.Env):
         )
         done = False
 
-        reward = -fuelcost
-        reward = 0
+        reward = 0#-fuelcost
 
         if self.level_number>0:
             if outside or brokenleg:
@@ -521,18 +520,19 @@ class RocketLander(gym.Env):
             done = True
         else:
             # reward shaping
-            shaping = (
-                -0.5
-                * abs(distance / 1000)
-                * (distance + speed + (-y_abs_speed) + abs(angle))
-            )
+            #shaping = (
+            #    -0.5
+            #    * abs(distance / 1000)
+            #    * (distance + speed + (-y_abs_speed) + abs(angle))
+            #)
             #shaping += 0.1 * (self.legs[0].ground_contact + self.legs[1].ground_contact)
             #shaping  = (abs(x_distance)-abs(angle))/2
-            if self.prev_shaping is not None:
-                reward += shaping - self.prev_shaping
-            self.prev_shaping = shaping
+            #if self.prev_shaping is not None:
+            #    reward += shaping - self.prev_shaping
+            #self.prev_shaping = shaping
+            print(y_abs_speed)
             if self.legs[0].ground_contact or self.legs[1].ground_contact:
-                reward += 10*abs(1-y_abs_speed)
+                reward += 10*abs(0.5-y_abs_speed)
 
             if self.landed:
                 self.landed_ticks += 1
@@ -554,7 +554,6 @@ class RocketLander(gym.Env):
         #    reward -= 0.1-abs(speed)
         if done:
             #reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
-            print(self.total_fuel)
             if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
