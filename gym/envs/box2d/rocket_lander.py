@@ -514,9 +514,11 @@ class RocketLander(gym.Env):
         elif outside : 
             self.game_over = True
 
+        if self.total_fuel<0:
+            reward=-100
+
         if self.game_over:
             done = True
-            reward -= 100*self.total_fuel
         else:
             # reward shaping
             shaping = (
@@ -553,11 +555,13 @@ class RocketLander(gym.Env):
         if done:
             #reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
             print(self.total_fuel)
-            if not self.landed_ticks == FPS:
+            if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
+                reward -= max(100,1000*(self.total_fuel/500))
+
             else:
-                reward += max(100,1000*(self.total_fuel/2000))
+                reward += max(100,1000*(self.total_fuel/500))
 
         #elif not groundcontact:
         #    reward -= 0.25 / FPS
