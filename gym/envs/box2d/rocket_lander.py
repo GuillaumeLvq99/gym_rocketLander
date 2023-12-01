@@ -505,7 +505,7 @@ class RocketLander(gym.Env):
         )
         done = False
 
-        #reward = -fuelcost
+        reward = -fuelcost
         reward = 0
 
         if self.level_number>0:
@@ -516,7 +516,7 @@ class RocketLander(gym.Env):
 
         if self.game_over:
             done = True
-            reward -= 500+self.total_fuel
+            reward -= 100*self.total_fuel
         else:
             # reward shaping
             shaping = (
@@ -524,15 +524,13 @@ class RocketLander(gym.Env):
                 * abs(distance / 1000)
                 * (distance + speed + (-y_abs_speed) + abs(angle))
             )
-            shaping += 0.1 * (self.legs[0].ground_contact + self.legs[1].ground_contact)
+            #shaping += 0.1 * (self.legs[0].ground_contact + self.legs[1].ground_contact)
             #shaping  = (abs(x_distance)-abs(angle))/2
             if self.prev_shaping is not None:
                 reward += shaping - self.prev_shaping
             self.prev_shaping = shaping
-            if self.legs[0].ground_contact:
-                reward += 1#-abs(x_distance)
-            if self.legs[1].ground_contact:
-                reward += 1#-abs(x_distance)
+            if self.legs[0].ground_contact or self.legs[1].ground_contact:
+                reward += 10*abs(1-y_abs_speed)
 
             if self.landed:
                 self.landed_ticks += 1
@@ -553,15 +551,18 @@ class RocketLander(gym.Env):
         #if y_distance < 0.5:
         #    reward -= 0.1-abs(speed)
         if done:
-            reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
-            #reward += self.total_fuel+500
+            #reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
+            print(total_fuel)
             if not self.landed_ticks == FPS:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
-        elif not groundcontact:
-            reward -= 0.25 / FPS
+            else:
+                reward += max(100,1000*(self.total_fuel/2000))
 
-        reward = np.clip(reward, -1, 1)
+        #elif not groundcontact:
+        #    reward -= 0.25 / FPS
+
+        #reward = np.clip(reward, -1, 1)
 
         # REWARD -------------------------------------------------------------------------------------------------------
 
