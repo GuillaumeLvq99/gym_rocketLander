@@ -494,7 +494,7 @@ class RocketLander(gym.Env):
              brokenleg = True
         outside = abs(pos.x - W / 2) > W / 2 or pos.y > H
 
-        fuelcost = 0.1 * (0 * (self.power + abs(self.force_dir))) / FPS
+        fuelcost = 0.1 * (self.power + abs(self.force_dir)) / FPS
         #fuelcost = self.power
         self.total_fuel -= fuelcost
 
