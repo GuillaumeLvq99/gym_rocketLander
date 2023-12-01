@@ -201,7 +201,7 @@ class RocketLander(gym.Env):
         self.throttle = 0
         self.gimbal = 0.0
         self.landed_ticks = 0
-        self.total_fuel=2000
+        self.total_fuel=10
         self.stepnumber = 0
         self.smoke = []
         self.episode_number += 1
@@ -494,8 +494,8 @@ class RocketLander(gym.Env):
              brokenleg = True
         outside = abs(pos.x - W / 2) > W / 2 or pos.y > H
 
-        fuelcost = 0.1 * (self.power + abs(self.force_dir)) / FPS
-        #fuelcost = self.power
+        #fuelcost = 0.1 * (self.power + abs(self.force_dir)) / FPS
+        fuelcost = self.power
         self.total_fuel -= fuelcost
 
         self.landed = (
