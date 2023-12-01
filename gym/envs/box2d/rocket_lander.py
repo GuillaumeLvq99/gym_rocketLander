@@ -201,7 +201,7 @@ class RocketLander(gym.Env):
         self.throttle = 0
         self.gimbal = 0.0
         self.landed_ticks = 0
-        self.total_fuel=10
+        self.total_fuel=500
         self.stepnumber = 0
         self.smoke = []
         self.episode_number += 1
