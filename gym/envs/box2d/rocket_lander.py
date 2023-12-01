@@ -552,7 +552,7 @@ class RocketLander(gym.Env):
         #    reward -= 0.1-abs(speed)
         if done:
             #reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
-            print(total_fuel)
+            print(self.total_fuel)
             if not self.landed_ticks == FPS:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
