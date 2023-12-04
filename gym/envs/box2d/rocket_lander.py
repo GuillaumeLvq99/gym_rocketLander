@@ -17,8 +17,8 @@ from gym.utils import seeding
 
 
 def compute_leg_length(LEG_LENGTH, level):
-    if level > 2:
-        return LEG_LENGTH *max(0.1, 10-level)
+    if level > 10:
+        return LEG_LENGTH * max(0.1, 0.1*(20-level))
     else:
         return LEG_LENGTH
 
@@ -287,7 +287,7 @@ class RocketLander(gym.Env):
         def initial_rocket_pos(level):
 
             if level > 1:
-                initial_x = W / 2 + W * np.random.uniform(-0.3, 0.3)
+                initial_x = W / 2 + W * np.random.uniform(-0.03*level, 0.03*level)
                 initial_y = H * 0.95
             else:
                 initial_x = W / 2 + W * np.random.uniform(-0.03, 0.03)
