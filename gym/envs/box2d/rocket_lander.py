@@ -505,7 +505,7 @@ class RocketLander(gym.Env):
         )
         done = False
 
-        reward = fuelcost
+        reward = 0#fuelcost
 
         if self.level_number>0:
             if outside or brokenleg:
