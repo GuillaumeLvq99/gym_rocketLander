@@ -152,7 +152,7 @@ class RocketLander(gym.Env):
         self.landed = False
         self.landed_fraction = [0 for _ in range(LF_BUFFER_SIZE)]
         self.good_landings = 0
-        self.speed_threshold = max(0, speed_threshold*(10-level_number)
+        self.speed_threshold = max(0, speed_threshold*(10-level_number))
         almost_inf = 9999
         high = np.array(
             [1, 1, 1, 1, 1, 1, 1, almost_inf, almost_inf, almost_inf], dtype=np.float32
