@@ -73,7 +73,7 @@ START_SPEED = 40.0
 MIN_THROTTLE = 0.4
 GIMBAL_THRESHOLD = 0.4
 MAIN_ENGINE_POWER = 1600 * SCALE_S * 1.0
-SIDE_ENGINE_POWER = 100 / FPS * SCALE_S * 2.0
+SIDE_ENGINE_POWER = 100 / FPS * SCALE_S * 3.0
 
 ROCKET_WIDTH = 3.66 * SCALE_S
 ROCKET_HEIGHT = ROCKET_WIDTH / 3.7 * 47.9
@@ -152,7 +152,7 @@ class RocketLander(gym.Env):
         self.landed = False
         self.landed_fraction = [0 for _ in range(LF_BUFFER_SIZE)]
         self.good_landings = 0
-        self.speed_threshold = speed_threshold
+        self.speed_threshold = max(0, speed_threshold*(10-level_number)
         almost_inf = 9999
         high = np.array(
             [1, 1, 1, 1, 1, 1, 1, almost_inf, almost_inf, almost_inf], dtype=np.float32
@@ -531,7 +531,7 @@ class RocketLander(gym.Env):
             #    reward += shaping - self.prev_shaping
             #self.prev_shaping = shaping
             if self.legs[0].ground_contact or self.legs[1].ground_contact:
-                reward += 10*abs(0.5-y_abs_speed)
+                reward += 10*abs(0.1-y_abs_speed)
 
             if self.landed:
                 self.landed_ticks += 1
@@ -556,7 +556,7 @@ class RocketLander(gym.Env):
             if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
-                reward -= max(100,1000*(self.total_fuel/700))
+                reward -= max(100,1000*(self.total_fuel/700)+abs(speed))
 
             else:
                 reward += max(100,1000*(self.total_fuel/700))
