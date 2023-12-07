@@ -556,12 +556,12 @@ class RocketLander(gym.Env):
             if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
-                reward -= max(100,1000*(self.total_fuel/500))
+                reward -= max(100,1000*(self.total_fuel/700))
 
             else:
-                reward += max(100,1000*(self.total_fuel/500))
+                reward += max(100,1000*(self.total_fuel/700))
 
-        reward = reward /1000
+        reward = reward /1000   
         #elif not groundcontact:
         #    reward -= 0.25 / FPS
 
@@ -571,7 +571,10 @@ class RocketLander(gym.Env):
 
         self.stepnumber += 1
 
-        state = (state - MEAN[: len(state)]) / VAR[: len(state)]
+        if self.stepnumber==999 and not done:
+            reward-=10
+
+        #state = (state - MEAN[: len(state)]) / VAR[: len(state)]
         return np.array(state), reward, done, {}
 
     def render(self, mode="human", close=False):
