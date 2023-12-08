@@ -201,7 +201,7 @@ class RocketLander(gym.Env):
         self.throttle = 0
         self.gimbal = 0.0
         self.landed_ticks = 0
-        self.total_fuel=700
+        self.total_fuel=1000
         self.stepnumber = 0
         self.smoke = []
         self.episode_number += 1
@@ -487,11 +487,11 @@ class RocketLander(gym.Env):
         groundcontact = self.legs[0].ground_contact or self.legs[1].ground_contact
         y_abs_speed = vel_l[1] * np.sin(angle)
         brokenleg = False
-        #brokenleg = (
-        #    self.legs[0].joint.angle < 0 or self.legs[1].joint.angle > -0
-        #) and groundcontact
-        if groundcontact and abs(y_abs_speed) > self.speed_threshold:
-             brokenleg = True
+        brokenleg = (
+            self.legs[0].joint.angle < self.speed_threshold or self.legs[1].joint.angle > -self.speed_threshold
+        ) and groundcontact
+        #if groundcontact and abs(y_abs_speed) > self.speed_threshold:
+        #     brokenleg = True
         outside = abs(pos.x - W / 2) > W / 2 or pos.y > H
 
         #fuelcost = 0.1 * (self.power + abs(self.force_dir)) / FPS
@@ -556,10 +556,10 @@ class RocketLander(gym.Env):
             if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
-                reward -= max(100,1000*(self.total_fuel/700)+abs(speed))
+                reward -= max(100,1000*((self.total_fuel/1000)+abs(speed)))
 
             else:
-                reward += max(100,1000*(self.total_fuel/700))
+                reward += max(100,1000*(self.total_fuel/1000))
 
         reward = reward /1000   
         #elif not groundcontact:
