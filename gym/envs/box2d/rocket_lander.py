@@ -544,7 +544,7 @@ class RocketLander(gym.Env):
 
             if self.landed:
                 self.landed_ticks += 1
-                reward += 10
+                reward += 10*(1-abs(angle))
 
             else:
                 self.landed_ticks = 0
