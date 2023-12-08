@@ -538,7 +538,7 @@ class RocketLander(gym.Env):
             #    reward += shaping - self.prev_shaping
             #self.prev_shaping = shaping
             if self.legs[0].ground_contact or self.legs[1].ground_contact:
-                reward -= 10*(y_abs_speed+abs(angle))
+                reward -= 10*(abs(y_abs_speed)+abs(angle))
 
             if self.landed:
                 self.landed_ticks += 1
