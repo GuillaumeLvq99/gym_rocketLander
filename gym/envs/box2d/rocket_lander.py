@@ -563,7 +563,7 @@ class RocketLander(gym.Env):
             if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
-                reward -= max(100,1000*((self.total_fuel/1000)+abs(speed)+abs(angularVelocity)))
+                reward -= max(100,1000*((self.total_fuel/1000)+abs(speed)+abs(vel_a)))
 
             else:
                 reward += max(100,1000*(self.total_fuel/1000))
