@@ -73,7 +73,7 @@ START_SPEED = 40.0
 MIN_THROTTLE = 0.4
 GIMBAL_THRESHOLD = 0.4
 MAIN_ENGINE_POWER = 1600 * SCALE_S * 1.0
-SIDE_ENGINE_POWER = 100 / FPS * SCALE_S * 3.0
+SIDE_ENGINE_POWER = 100 / FPS * SCALE_S * 2.0
 
 ROCKET_WIDTH = 3.66 * SCALE_S
 ROCKET_HEIGHT = ROCKET_WIDTH / 3.7 * 47.9
@@ -135,7 +135,7 @@ class ContactDetector(contactListener):
 class RocketLander(gym.Env):
     metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": FPS}
 
-    def __init__(self, level_number=0, continuous=CONTINUOUS, speed_threshold=1):
+    def __init__(self, level_number=0, continuous=CONTINUOUS, speed_threshold=0.1):
         self.level_number = level_number
         self._seed()
         self.viewer = None
@@ -487,12 +487,20 @@ class RocketLander(gym.Env):
         groundcontact = self.legs[0].ground_contact or self.legs[1].ground_contact
         y_abs_speed = vel_l[1] * np.sin(angle)
         brokenleg = False
-        print(self.legs[0].joint.angle, self.legs[1].joint.angle)
-        brokenleg = (
-            self.legs[0].joint.angle < self.speed_threshold or self.legs[1].joint.angle > -self.speed_threshold
-        ) and groundcontact
-        #if groundcontact and abs(y_abs_speed) > self.speed_threshold:
-        #     brokenleg = True
+        
+        
+        if self.level_number>9:
+            brokenleg = (
+                self.legs[0].joint.angle < self.speed_threshold or self.legs[1].joint.angle > -self.speed_threshold
+            ) and groundcontact
+
+
+        elif self.level_number>0:
+            if groundcontact and abs(y_abs_speed) > self.speed_threshold-0.01*self.level_number:
+                brokenleg = True
+
+        if brokenleg:
+            print("broken leg")
         outside = abs(pos.x - W / 2) > W / 2 or pos.y > H
 
         #fuelcost = 0.1 * (self.power + abs(self.force_dir)) / FPS
@@ -532,7 +540,7 @@ class RocketLander(gym.Env):
             #    reward += shaping - self.prev_shaping
             #self.prev_shaping = shaping
             if self.legs[0].ground_contact or self.legs[1].ground_contact:
-                reward += 10*abs(0.1-y_abs_speed)
+                reward -= 10*y_abs_speed
 
             if self.landed:
                 self.landed_ticks += 1
