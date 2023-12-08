@@ -287,7 +287,7 @@ class RocketLander(gym.Env):
         def initial_rocket_pos(level):
 
             if level > 1:
-                initial_x = W / 2 + W * np.random.uniform(-0.03*level, 0.03*level)
+                initial_x = W / 2 + W * np.random.uniform(-0.03*(1+0.1*level), 0.03*(1+0.1*level))
                 initial_y = H * 0.95
             else:
                 initial_x = W / 2 + W * np.random.uniform(-0.03, 0.03)
@@ -563,7 +563,7 @@ class RocketLander(gym.Env):
             if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
-                reward -= max(100,1000*((self.total_fuel/1000)+abs(speed)+abs(vel_a)))
+                reward -= max(100,1000*((self.total_fuel/1000)+abs(vel_a)))
 
             else:
                 reward += max(100,1000*(self.total_fuel/1000))
