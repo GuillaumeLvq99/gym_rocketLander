@@ -499,8 +499,6 @@ class RocketLander(gym.Env):
             if groundcontact and abs(y_abs_speed) > self.speed_threshold-0.01*self.level_number:
                 brokenleg = True
 
-        if brokenleg:
-            print("broken leg")
         outside = abs(pos.x - W / 2) > W / 2 or pos.y > H
 
         #fuelcost = 0.1 * (self.power + abs(self.force_dir)) / FPS
@@ -540,7 +538,7 @@ class RocketLander(gym.Env):
             #    reward += shaping - self.prev_shaping
             #self.prev_shaping = shaping
             if self.legs[0].ground_contact or self.legs[1].ground_contact:
-                reward -= 10*y_abs_speed
+                reward -= 10*(y_abs_speed+abs(angle))
 
             if self.landed:
                 self.landed_ticks += 1
@@ -565,7 +563,7 @@ class RocketLander(gym.Env):
             if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
-                reward -= max(100,1000*((self.total_fuel/1000)+abs(speed)))
+                reward -= max(100,1000*((self.total_fuel/1000)+abs(speed)+abs(angularVelocity)))
 
             else:
                 reward += max(100,1000*(self.total_fuel/1000))
