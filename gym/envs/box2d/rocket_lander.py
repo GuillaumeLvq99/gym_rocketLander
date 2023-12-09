@@ -563,7 +563,7 @@ class RocketLander(gym.Env):
             if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
-                reward -= max(100,1000*((self.total_fuel/1000)+abs(vel_a)+y_distance))
+                reward -= max(100,1000*((self.total_fuel/1000)+abs(vel_a)+y_distance*10))
 
             else:
                 reward += max(100,1000*(self.total_fuel/1000))
@@ -571,7 +571,7 @@ class RocketLander(gym.Env):
         reward = reward /1000   
 
         if vel_l[1]>0:
-            reward=-1
+            reward=-10
         #elif not groundcontact:
         #    reward -= 0.25 / FPS
 
