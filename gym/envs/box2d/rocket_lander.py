@@ -518,6 +518,8 @@ class RocketLander(gym.Env):
         if self.total_fuel<0:
             reward-=10
 
+        if vel_l[1]>0:
+            reward-=1000
         if self.level_number>0:
             if outside or brokenleg:
                 self.game_over = True
@@ -542,7 +544,7 @@ class RocketLander(gym.Env):
 
             if (self.legs[0].ground_contact or self.legs[1].ground_contact) and not self.touch_down:
                 self.touch_down = True
-                reward += 100*(1-abs(vel_l[1]))
+                reward += 100*(1-abs(vel_l[1])-abs(angle)*10)
 
             if self.landed:
                 self.landed_ticks += 1
@@ -577,7 +579,7 @@ class RocketLander(gym.Env):
                     reward -= max(100,1000*((self.total_fuel/700)+abs(speed)+abs(pos.x)))
 
             else:
-                reward += max(100,1000*((self.total_fuel/700)+1-abs(pos.x)))
+                reward += max(100,10000*((self.total_fuel/700)+1-abs(pos.x)))
 
         reward = reward/1000
         
