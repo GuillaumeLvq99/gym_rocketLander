@@ -563,8 +563,7 @@ class RocketLander(gym.Env):
 
         reward = reward /1000
 
-        y_abs_speed = vel_l[1] * np.sin(angle)
-        print(y_abs_speed, vel_l[1], sin(angle))
+        print(y_abs_speed, vel_l[1], np.sin(angle))
         if y_abs_speed>0:
             reward=-10
 
