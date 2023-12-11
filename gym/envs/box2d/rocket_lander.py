@@ -512,7 +512,7 @@ class RocketLander(gym.Env):
         # REWARD -------------------------------------------------------------------------------------------------------
         # state variables for reward
 
-        reward = self.power*(0.8-self.total_fuel/1000)-abs(x_distance)
+        reward = self.power*(self.total_fuel/1000-0.8)-abs(x_distance)
 
         if self.level_number>0:
             if outside or brokenleg:
