@@ -205,6 +205,7 @@ class RocketLander(gym.Env):
         self.stepnumber = 0
         self.smoke = []
         self.episode_number += 1
+        self.touch_down=False
 
         # self.terrainheigth = self.np_random.uniform(H / 20, H / 10)
         self.terrainheigth = H / 20
@@ -433,7 +434,7 @@ class RocketLander(gym.Env):
         self.power = (
             0
             if self.throttle == 0.0
-            else MIN_THROTTLE + self.throttle * (1 - MIN_THROTTLE)
+            else MIN_THROTTLE + self.throttle * (1 - MIN_THROTTLE) + 0.1*abs(self.force_dir)
         )
 
         # main engine force
@@ -539,8 +540,9 @@ class RocketLander(gym.Env):
             #    reward += shaping - self.prev_shaping
             #self.prev_shaping = shaping
 
-            if (self.legs[0].ground_contact or self.legs[1].ground_contact):
+            if (self.legs[0].ground_contact or self.legs[1].ground_contact) and not self.touch_down:
                 reward -= 100*(abs(y_abs_speed)+abs(angle)-0.1)
+                self.touch_down = True
 
             #if self.landed:
             #    self.landed_ticks += 1
