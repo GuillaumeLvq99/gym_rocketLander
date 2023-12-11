@@ -488,7 +488,7 @@ class RocketLander(gym.Env):
 
         if self.level_number>9:
             brokenleg = (
-                self.legs[0].joint.angle < self.speed_threshold or self.legs[1].joint.angle > -self.speed_threshold
+                self.legs[0].joint.angle < 0 or self.legs[1].joint.angle > 0
             ) and groundcontact
 
 
@@ -563,9 +563,8 @@ class RocketLander(gym.Env):
 
         reward = reward /1000
 
-        print(y_abs_speed, vel_l[1], np.sin(angle))
-        if y_abs_speed>0:
-            reward=-10
+        if vel_l[1]>0:
+            reward=-100
 
         if done:
             #reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
