@@ -544,9 +544,10 @@ class RocketLander(gym.Env):
                 reward -= 100*(abs(y_abs_speed)+abs(angle)-0.1)
                 self.touch_down = True
 
-            #if self.landed:
-            #    self.landed_ticks += 1
-            #    reward += 100*(1-abs(angle)-abs(pos.x))
+            if self.landed:
+                self.landed_ticks += 1
+                reward += 100*(1-abs(angle)-abs(pos.x))
+
             if not self.landed:
                 self.landed_ticks = 0
 
@@ -564,8 +565,8 @@ class RocketLander(gym.Env):
 
         reward = reward /500
 
-        #if vel_l[1]>0:
-        #    reward=-100
+        if vel_l[1]>0:
+            reward=-100
 
         if done:
             #reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
