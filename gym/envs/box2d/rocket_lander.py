@@ -542,7 +542,7 @@ class RocketLander(gym.Env):
 
             if (self.legs[0].ground_contact or self.legs[1].ground_contact) and not self.touch_down:
                 self.touch_down = True
-                eward += 100*(1-abs(velocity_y))
+                reward += 100*(1-abs(velocity_y))
 
             if self.landed:
                 self.landed_ticks += 1
