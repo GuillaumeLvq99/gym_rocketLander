@@ -579,9 +579,9 @@ class RocketLander(gym.Env):
                     reward -= max(100,1000*((self.total_fuel/700)+abs(speed)+abs(pos.x)))
 
             else:
-                reward += max(100,10000*((self.total_fuel/700)+1-abs(pos.x)))
+                reward += max(1000,10000*((self.total_fuel/700)+1-abs(pos.x)))
 
-        reward = reward/1000
+        reward = reward
         
 
         #elif not groundcontact:
