@@ -512,7 +512,7 @@ class RocketLander(gym.Env):
         # REWARD -------------------------------------------------------------------------------------------------------
         # state variables for reward
 
-        reward = -abs(pos.x)
+        reward = 0.1-abs(y_abs_speed)
 
         if self.level_number>0:
             if outside or brokenleg:
@@ -539,13 +539,13 @@ class RocketLander(gym.Env):
             #    reward += shaping - self.prev_shaping
             #self.prev_shaping = shaping
 
-            if (self.legs[0].ground_contact or self.legs[1].ground_contact) and not self.landed:
+            if (self.legs[0].ground_contact or self.legs[1].ground_contact):
                 reward -= 100*(abs(y_abs_speed)+abs(angle)-0.1)
 
-            if self.landed:
-                self.landed_ticks += 1
-                reward += 100*(1-abs(angle))
-            else:
+            #if self.landed:
+            #    self.landed_ticks += 1
+            #    reward += 100*(1-abs(angle)-abs(pos.x))
+            if not self.landed
                 self.landed_ticks = 0
 
             if self.landed_ticks == FPS:
@@ -560,7 +560,7 @@ class RocketLander(gym.Env):
         #if y_distance < 0.5:
         #    reward -= 0.1-abs(speed)
 
-        #reward = reward /1000
+        reward = reward /500
 
         #if vel_l[1]>0:
         #    reward=-100
@@ -570,10 +570,13 @@ class RocketLander(gym.Env):
             if self.game_over:
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
-                reward -= max(100,1000*((self.total_fuel/1000)+abs(speed)+abs(pos.x)))
+                if outside:
+                    reward -=1000
+                else:
+                    reward -= max(100,1000*((self.total_fuel/1000)+abs(speed)+abs(pos.x)))
 
             else:
-                reward += max(100,1000*((self.total_fuel/1000)+1))
+                reward += max(100,1000*((self.total_fuel/1000)+1-abs(pos.x)))
 
         
 
