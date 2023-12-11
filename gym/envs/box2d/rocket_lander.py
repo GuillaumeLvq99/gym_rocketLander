@@ -201,7 +201,7 @@ class RocketLander(gym.Env):
         self.throttle = 0
         self.gimbal = 0.0
         self.landed_ticks = 0
-        self.total_fuel=1000
+        self.total_fuel=700
         self.stepnumber = 0
         self.smoke = []
         self.episode_number += 1
@@ -512,7 +512,7 @@ class RocketLander(gym.Env):
         # REWARD -------------------------------------------------------------------------------------------------------
         # state variables for reward
 
-        reward = 0.1-abs(y_abs_speed)
+        reward = 0
 
         if self.level_number>0:
             if outside or brokenleg:
@@ -573,10 +573,10 @@ class RocketLander(gym.Env):
                 if outside:
                     reward -=1000
                 else:
-                    reward -= max(100,1000*((self.total_fuel/1000)+abs(speed)+abs(pos.x)))
+                    reward -= max(100,1000*((self.total_fuel/700)+abs(speed)+abs(pos.x)))
 
             else:
-                reward += max(100,1000*((self.total_fuel/1000)+1-abs(pos.x)))
+                reward += max(100,1000*((self.total_fuel/700)+1-abs(pos.x)))
 
         
 
