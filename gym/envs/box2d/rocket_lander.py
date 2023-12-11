@@ -545,7 +545,7 @@ class RocketLander(gym.Env):
             #if self.landed:
             #    self.landed_ticks += 1
             #    reward += 100*(1-abs(angle)-abs(pos.x))
-            if not self.landed
+            if not self.landed:
                 self.landed_ticks = 0
 
             if self.landed_ticks == FPS:
