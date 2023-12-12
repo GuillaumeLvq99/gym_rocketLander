@@ -497,7 +497,7 @@ class RocketLander(gym.Env):
             if groundcontact and abs(y_abs_speed) > self.speed_threshold-0.01*self.level_number:
                 brokenleg = True
 
-        outside = abs(pos.x - W / 2) > 250 or pos.y > H
+        outside = abs(pos.x - W / 2) > 200 or pos.y > H
 
         #fuelcost = 0.1 * (self.power + abs(self.force_dir)) / FPS
         fuelcost = self.power
@@ -555,8 +555,8 @@ class RocketLander(gym.Env):
                 self.landed_fraction.pop(0)
                 self.landed_fraction.append(0)
                 if outside:
+                    reward -= 100000
                     print("outside")
-                    reward -= 10000
                 else:
                     reward -= max(100,1000*((self.total_fuel/700)+abs(speed)+abs(pos.x)))
 
@@ -564,12 +564,7 @@ class RocketLander(gym.Env):
                 reward += max(100,10000*((self.total_fuel/700)+1-abs(pos.x)))
 
         reward = reward/1000
-        
 
-        #elif not groundcontact:
-        #    reward -= 0.25 / FPS
-
-        #reward = np.clip(reward, -1, 1)
 
         # REWARD -------------------------------------------------------------------------------------------------------
 
