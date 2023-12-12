@@ -557,11 +557,10 @@ class RocketLander(gym.Env):
                 if outside:
                     reward -= 10000
                 else:
-                    print('not out')
-                    reward -= max(100,10000*((self.total_fuel/700)+abs(speed)+abs(pos.x)))
+                    print(pos.x)
+                    reward -= max(100,1000*((self.total_fuel/700)+abs(speed)+abs(pos.x)))
 
             else:
-                print("good")
                 reward += max(100,10000*((self.total_fuel/700)+1-abs(pos.x)))
 
         reward = reward/1000
