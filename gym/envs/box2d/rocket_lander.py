@@ -497,7 +497,9 @@ class RocketLander(gym.Env):
             if groundcontact and abs(y_abs_speed) > self.speed_threshold-0.01*self.level_number:
                 brokenleg = True
 
-        outside = abs(pos.x - W / 2) > 250 or pos.y > H
+        outside = (2 * x_distance - MEAN[0]) / VAR[0] >0.99 or pos.y > H # abs(pos.x - W / 2) > W / 2.1 or pos.y > H
+
+        print("outside : ", outside)
 
         #fuelcost = 0.1 * (self.power + abs(self.force_dir)) / FPS
         fuelcost = self.power
@@ -537,7 +539,7 @@ class RocketLander(gym.Env):
 
             if self.landed:
                 self.landed_ticks += 1
-                reward+=100*(1-abs(pos.x)-abs(angle))
+                reward+=100*(1-abs((x_distance*2- MEAN[0]) / VAR[0])-abs(angle))
 
 
             else:
@@ -556,6 +558,7 @@ class RocketLander(gym.Env):
                 self.landed_fraction.append(0)
                 if outside:
                     reward -= 10000
+                    print(outside)
                 else:
                     reward -= max(100,1000*((self.total_fuel/700)+abs(speed)+abs(pos.x)))
 
@@ -563,14 +566,19 @@ class RocketLander(gym.Env):
                 reward += max(100,10000*((self.total_fuel/700)+1-abs(pos.x)))
 
         reward = reward/1000
+        
 
+        #elif not groundcontact:
+        #    reward -= 0.25 / FPS
+
+        #reward = np.clip(reward, -1, 1)
 
         # REWARD -------------------------------------------------------------------------------------------------------
 
         self.stepnumber += 1
 
         if self.stepnumber==999 and not done:
-            reward-=10
+            reward-=10000
 
         state = (state - MEAN[: len(state)]) / VAR[: len(state)]
         return np.array(state), reward, done, {}
