@@ -152,7 +152,7 @@ class RocketLander(gym.Env):
         self.landed = False
         self.landed_fraction = [0 for _ in range(LF_BUFFER_SIZE)]
         self.good_landings = 0
-        self.speed_threshold = max(0, speed_threshold*(10-level_number))
+        self.speed_threshold = speed_threshold #max(0, speed_threshold*(10-level_number))
         almost_inf = 9999
         high = np.array(
             [1, 1, 1, 1, 1, 1, 1, almost_inf, almost_inf, almost_inf], dtype=np.float32
@@ -497,7 +497,7 @@ class RocketLander(gym.Env):
             if groundcontact and abs(y_abs_speed) > self.speed_threshold-0.01*self.level_number:
                 brokenleg = True
 
-        outside = (2 * x_distance - MEAN[0]) / VAR[0] >0.99 or pos.y > H # abs(pos.x - W / 2) > W / 2.1 or pos.y > H
+        outside = abs(pos.x - W / 2) > W / 2.1 or pos.y > H
 
         print("outside : ", outside)
 
@@ -539,7 +539,7 @@ class RocketLander(gym.Env):
 
             if self.landed:
                 self.landed_ticks += 1
-                reward+=100*(1-abs((x_distance*2- MEAN[0]) / VAR[0])-abs(angle))
+                reward+=100*(1-abs(x_distance)-abs(angle))
 
 
             else:
@@ -558,12 +558,12 @@ class RocketLander(gym.Env):
                 self.landed_fraction.append(0)
                 if outside:
                     reward -= 10000
-                    print(outside)
+                    print("outside")
                 else:
-                    reward -= max(100,1000*((self.total_fuel/700)+abs(speed)+abs(pos.x)))
+                    reward -= max(100,1000*((self.total_fuel/700)+abs(speed)+abs(x_distance)))
 
             else:
-                reward += max(100,10000*((self.total_fuel/700)+1-abs(pos.x)))
+                reward += max(100,10000*((self.total_fuel/700)+1-abs(x_distance)))
 
         reward = reward/1000
         
