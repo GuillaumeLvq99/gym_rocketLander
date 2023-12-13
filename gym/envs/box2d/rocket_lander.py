@@ -286,10 +286,10 @@ class RocketLander(gym.Env):
 
             if level > 0:
                 initial_x = W / 2 + W * np.random.uniform(-0.3, 0.3)
-                initial_y = H * 0.95
+                initial_y = H * 0.55
             else:
                 initial_x = W / 2 + W * np.random.uniform(-0.03, 0.03)
-                initial_y = H * 0.95
+                initial_y = H * 0.55
             return initial_x, initial_y
 
         initial_x, initial_y = initial_rocket_pos(self.level_number)
