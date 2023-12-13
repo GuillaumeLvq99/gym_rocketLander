@@ -497,9 +497,10 @@ class RocketLander(gym.Env):
             if groundcontact and abs(y_abs_speed) > self.speed_threshold-0.01*self.level_number:
                 brokenleg = True
 
-        outside = abs(pos.x - W / 2) > W / 2.1 or pos.y > H
+        outside = abs(pos.x - W / 2) > W / 3 or pos.y > H
 
         print("outside : ", outside)
+        print(pos.x, x_distance)
 
         #fuelcost = 0.1 * (self.power + abs(self.force_dir)) / FPS
         fuelcost = self.power
