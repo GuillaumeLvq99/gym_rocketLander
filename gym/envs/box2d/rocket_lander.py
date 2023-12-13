@@ -135,7 +135,7 @@ class ContactDetector(contactListener):
 class RocketLander(gym.Env):
     metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": FPS}
 
-    def __init__(self, level_number=0, continuous=CONTINUOUS, speed_threshold=0.1):
+    def __init__(self, level_number=0, continuous=CONTINUOUS, speed_threshold=0.2):
         self.level_number = level_number
         self._seed()
         self.viewer = None
